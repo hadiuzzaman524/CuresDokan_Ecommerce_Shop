@@ -1,10 +1,12 @@
+import 'package:curesdokan/screens/details_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductItemDesign extends StatefulWidget {
   final String title;
   final String imageUrl;
+  final String id;
 
-  ProductItemDesign({this.title, this.imageUrl});
+  ProductItemDesign({this.id, this.title, this.imageUrl});
 
   @override
   _ProductItemDesignState createState() => _ProductItemDesignState();
@@ -22,8 +24,16 @@ class _ProductItemDesignState extends State<ProductItemDesign> {
         Radius.circular(10),
       ),
       child: GridTile(
-        child: Image.network(widget.imageUrl,
-        fit: BoxFit.cover,),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, DetailsScreen.routeName,
+                arguments: widget.id);
+          },
+          child: Image.network(
+            widget.imageUrl,
+            fit: BoxFit.cover,
+          ),
+        ),
         footer: Container(
           height: 35,
           width: MediaQuery.of(context).size.width,

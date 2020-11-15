@@ -5,6 +5,15 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+
+    final String productId=ModalRoute.of(context).settings.arguments as String;
+    return SafeArea(child: Scaffold(
+      appBar: AppBar(
+        title: Text('Product Details'),
+      ),
+      body: Center(
+        child: Text(productId),
+      ),
+    ));
   }
 }

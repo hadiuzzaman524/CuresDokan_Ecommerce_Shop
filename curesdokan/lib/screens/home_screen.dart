@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
       description: 'A nice pair of trousers.',
       price: 59.99,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trous',
+          'https://www.roudstudio.com/images/works/product-photo/img03.jpg',
     ),
     Product(
       id: 'p2',
@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       description: 'A nice pair of trousers.',
       price: 59.99,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trous',
+          'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
     ),
     Product(
       id: 'p2',
@@ -41,7 +41,55 @@ class _HomeScreenState extends State<HomeScreen> {
       description: 'A nice pair of trousers.',
       price: 59.99,
       imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trous',
+          'https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Trousers',
+      description: 'A nice pair of trousers.',
+      price: 59.99,
+      imageUrl:
+          'https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Trousers',
+      description: 'A nice pair of trousers.',
+      price: 59.99,
+      imageUrl:
+          'https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Trousers',
+      description: 'A nice pair of trousers.',
+      price: 59.99,
+      imageUrl:
+          'https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Trousers',
+      description: 'A nice pair of trousers.',
+      price: 59.99,
+      imageUrl:
+          'https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Trousers',
+      description: 'A nice pair of trousers.',
+      price: 59.99,
+      imageUrl:
+          'https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Trousers',
+      description: 'A nice pair of trousers.',
+      price: 59.99,
+      imageUrl:
+          'https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
     ),
   ];
 
@@ -65,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.all(10),
           itemBuilder: (ctx, index) {
             return ProductItemDesign(
+              id: productList[index].id,
               title: productList[index].title,
               imageUrl: productList[index].imageUrl,
             );
