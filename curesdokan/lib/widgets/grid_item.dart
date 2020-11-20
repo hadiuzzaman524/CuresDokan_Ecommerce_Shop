@@ -4,10 +4,15 @@ import 'package:provider/provider.dart';
 import '../provider_info/products.dart';
 
 class GridItem extends StatelessWidget {
+  final bool isFev;
+
+  GridItem({this.isFev});
 
   @override
   Widget build(BuildContext context) {
-    final productList=Provider.of<Products>(context).productList;
+    final productList = isFev
+        ? Provider.of<Products>(context).favProductList
+        : Provider.of<Products>(context).productList;
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         mainAxisSpacing: 10,
@@ -18,10 +23,13 @@ class GridItem extends StatelessWidget {
       itemCount: productList.length,
       padding: EdgeInsets.all(10),
       itemBuilder: (ctx, index) {
-        return ProductItemDesign(
-          id: productList[index].id,
-          title: productList[index].title,
-          imageUrl: productList[index].imageUrl,
+        /*
+        If need to access previous data then use .value constructor
+        it is more efficient for work with previous object.
+         */
+        return ChangeNotifierProvider.value(
+          value: productList[index],
+          child: ProductItemDesign(),
         );
       },
     );
