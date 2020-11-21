@@ -1,3 +1,4 @@
+import 'package:curesdokan/provider_info/cart.dart';
 import 'package:curesdokan/provider_info/products.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,8 +6,15 @@ import './screens/home_screen.dart';
 import './screens/details_screen.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (_) => Products(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => Products(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => Cart(),
+      )
+    ],
     child: MyApp(),
   ));
 }
