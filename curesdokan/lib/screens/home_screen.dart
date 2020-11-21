@@ -1,3 +1,4 @@
+import 'package:curesdokan/screens/order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/grid_item.dart';
@@ -33,13 +34,23 @@ class _HomeScreenState extends State<HomeScreen> {
             faster. that's why used consumer
              */
             Consumer<Cart>(
-              builder:(context,cart,ch)=>Badge(
-                /*
-                here (_,cart,_) is the Cart Object, and ch is Child not used this
-                scenario
-                 */
-                child: Icon(Icons.add_shopping_cart_outlined),
-                value: cart.cartLength.toString(),
+              builder: (context, cart, ch) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderScreen(),
+                    ),
+                  );
+                },
+                child: Badge(
+                  /*
+                  here (_,cart,_) is the Cart Object, and ch is Child not used this
+                  scenario
+                   */
+                  child: Icon(Icons.add_shopping_cart_outlined),
+                  value: cart.cartLength.toString(),
+                ),
               ),
             ),
             PopupMenuButton(
@@ -65,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-
           ],
         ),
         body: GridItem(
