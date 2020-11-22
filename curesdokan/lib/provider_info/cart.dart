@@ -25,13 +25,18 @@ class Cart with ChangeNotifier {
   double get totalPrice {
     double total = 0;
     _items.forEach((key, value) {
-      total += value.price*value.quantity;
+      total += value.price * value.quantity;
     });
     return total;
   }
 
   int get cartLength {
     return _items.length;
+  }
+
+  void removeItem(String k) {
+    _items.removeWhere((key, value) => key == k);
+    notifyListeners();
   }
 
   void addItem(String productId, String title, String price) {

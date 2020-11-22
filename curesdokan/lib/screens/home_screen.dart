@@ -1,4 +1,4 @@
-import 'package:curesdokan/screens/order_screen.dart';
+import 'package:curesdokan/screens/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/grid_item.dart';
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OrderScreen(),
+                      builder: (context) => CartScreen(),
                     ),
                   );
                 },
