@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import '../widgets/cart_item.dart';
 import 'package:provider/provider.dart';
 import 'order_screen.dart';
+import '../provider_info/order.dart';
+import 'package:toast/toast.dart';
 
 class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+    final order = Provider.of<Order>(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -35,7 +39,7 @@ class CartScreen extends StatelessWidget {
                         ),
                         Spacer(),
                         Text(
-                          '\$${cart.totalPrice.toStringAsFixed(0)}',
+                          '${cart.totalPrice.toStringAsFixed(0)}৳',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 19,
@@ -43,11 +47,19 @@ class CartScreen extends StatelessWidget {
                         ),
                         FlatButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => OrderScreen()),
-                            );
+                            if (cart.cartLength > 0) {
+                              order.addItem(
+                                  cart.totalPrice, cart.items.values.toList());
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderScreen()),
+                              );
+                              cart.clear();
+                            }
+                            else{
+                              Toast.show("Cart is empty", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+                            }
                           },
                           child: Text(
                             'Order Now',

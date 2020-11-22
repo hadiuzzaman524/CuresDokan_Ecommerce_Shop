@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../widgets/grid_item.dart';
 import '../widgets/badge.dart';
 import '../provider_info/cart.dart';
+import '../widgets/drawer.dart';
 
 enum Choice {
   favorite,
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        drawer: AppDrawer(),
         appBar: AppBar(
           title: const Text(
             'CuresDokan',

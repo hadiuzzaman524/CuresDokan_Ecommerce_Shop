@@ -42,7 +42,7 @@ class CartItem extends StatelessWidget {
                 radius: 30,
                 child: FittedBox(
                   child: Text(
-                    price.toStringAsFixed(0),
+                    '${price.toStringAsFixed(0)}৳',
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -50,7 +50,7 @@ class CartItem extends StatelessWidget {
                 ),
               ),
               title: Text(title),
-              subtitle: Text((price * quantity).toStringAsFixed(0)),
+              subtitle: Text('${(price * quantity).toStringAsFixed(0)}৳'),
               trailing: Text('${quantity}x'),
             ),
           ),

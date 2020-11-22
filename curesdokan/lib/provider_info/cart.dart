@@ -34,6 +34,10 @@ class Cart with ChangeNotifier {
     return _items.length;
   }
 
+  void clear(){
+    _items={};
+    notifyListeners();
+  }
   void removeItem(String k) {
     _items.removeWhere((key, value) => key == k);
     notifyListeners();
