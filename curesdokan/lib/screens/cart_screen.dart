@@ -50,11 +50,7 @@ class CartScreen extends StatelessWidget {
                             if (cart.cartLength > 0) {
                               order.addItem(
                                   cart.totalPrice, cart.items.values.toList());
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrderScreen()),
-                              );
+                              Toast.show("Your order is received", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
                               cart.clear();
                             }
                             else{
