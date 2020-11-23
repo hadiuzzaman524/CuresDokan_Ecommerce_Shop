@@ -71,7 +71,27 @@ class _ProductItemDesignState extends State<ProductItemDesign> {
                     addcart = true;
                   });
                   cart.addItem(
-                      product.id, product.title, product.price.toString());
+                    product.id,
+                    product.title,
+                    product.price.toString(),
+                  );
+
+                  Scaffold.of(context).hideCurrentSnackBar();
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Product added successfully to your cart! ',
+                            style: TextStyle(
+                              color: Colors.orange,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
                 child: addcart
                     ? Icon(

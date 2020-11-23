@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider_info/cart.dart';
@@ -17,6 +18,31 @@ class CartItem extends StatelessWidget {
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: ValueKey(k),
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(
+                    'Are you sure you want to delete this item from your cart?'),
+                title: Text('Confirmation of delete item'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text('Yes'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text('No'),
+                  ),
+                ],
+              );
+            });
+      },
       onDismissed: (direction) {
         cart.removeItem(k);
       },

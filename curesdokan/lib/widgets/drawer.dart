@@ -1,4 +1,5 @@
 import 'package:curesdokan/screens/home_screen.dart';
+import 'package:curesdokan/screens/my_product_screen.dart';
 import 'package:curesdokan/screens/order_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,16 @@ class AppDrawer extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.shopping_cart),
               title: Text('Orders'),
+            ),
+          ),
+          Divider(),
+          FlatButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, MyProductScreen.routeName);
+            },
+            child: ListTile(
+              leading: Icon(Icons.edit),
+              title: Text('Customize your products'),
             ),
           ),
         ],
