@@ -85,7 +85,22 @@ class Products with ChangeNotifier {
     ),
   ];
 
-  addProduct() {
+  addProduct(Product product) {
+    Product _newProduct = Product(
+      title: product.title,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      id: DateTime.now().toString(),
+      description: product.description,
+    );
+
+    _list.add(_newProduct);
+
+    notifyListeners();
+  }
+
+  deleteProduct(String id){
+    _list.removeWhere((element) => element.id==id);
     notifyListeners();
   }
 
@@ -93,7 +108,7 @@ class Products with ChangeNotifier {
     return [..._list];
   }
 
-  List<Product> get favProductList{
+  List<Product> get favProductList {
     return _list.where((element) => element.isFavorite).toList();
   }
 }

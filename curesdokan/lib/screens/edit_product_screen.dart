@@ -1,5 +1,4 @@
-import 'dart:ffi';
-
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../provider_info/products.dart';
 import '../models/data_model.dart';
@@ -36,11 +35,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   _saveForm() {
-    _formkey.currentState.save();
-    print(_existingProduct.title);
-    print(_existingProduct.price);
-    print(_existingProduct.description);
+    bool _isValid = _formkey.currentState.validate();
 
+    if (_isValid) {
+      _formkey.currentState.save();
+      Provider.of<Products>(context,listen: false).addProduct(_existingProduct);
+      Navigator.of(context).pop();
+    } else {
+      return;
+    }
   }
 
   @override
@@ -70,6 +73,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     decoration: InputDecoration(
                       labelText: 'Name',
                     ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter title';
+                      }
+                      return null;
+                    },
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) {
                       FocusScope.of(context).requestFocus(_priceFocus);
@@ -85,6 +94,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     },
                   ),
                   TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Enter product price';
+                      }
+                      if (double.tryParse(value) == null) {
+                        return 'Please enter valid number';
+                      }
+                      if (double.parse(value) <= 0) {
+                        return 'Price not less 0';
+                      }
+                      return null;
+                    },
                     decoration: InputDecoration(
                       labelText: 'Price',
                     ),
@@ -108,6 +129,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     decoration: InputDecoration(
                       labelText: 'Description',
                     ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please describe the product details';
+                      }
+                      return null;
+                    },
                     keyboardType: TextInputType.text,
                     maxLines: 3,
                     focusNode: _descriptionFocus,
@@ -150,6 +177,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         ),
                         Expanded(
                           child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Enter image URL';
+                              }
+                              if (!value.startsWith('http') ||
+                                  !value.startsWith('https')) {
+                                return 'Enter valid URL';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               labelText: 'Image Url',
                             ),
