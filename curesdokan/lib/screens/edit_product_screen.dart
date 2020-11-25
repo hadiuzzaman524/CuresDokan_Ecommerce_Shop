@@ -14,7 +14,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _priceFocus = FocusNode();
   final _descriptionFocus = FocusNode();
   final _imageFocus = FocusNode();
-  final imageController = TextEditingController();
+  var imageController = TextEditingController();
   final _formkey = GlobalKey<FormState>();
   Product _existingProduct = Product(
     id: null,
@@ -23,6 +23,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
     price: 0,
     imageUrl: '',
   );
+  bool isFirsttime = true;
+
+  Map<String, String> productDetails = {
+    'id': '',
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': ''
+  };
 
   @override
   void dispose() {
@@ -35,11 +44,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   _saveForm() {
+    _formkey.currentState.save();
+
     bool _isValid = _formkey.currentState.validate();
 
+
     if (_isValid) {
-      _formkey.currentState.save();
-      Provider.of<Products>(context,listen: false).addProduct(_existingProduct);
+      if (_existingProduct.id == null) {
+        Provider.of<Products>(context, listen: false)
+            .addProduct(_existingProduct);
+      } else {
+        //updateProduct
+        Provider.of<Products>(context, listen: false)
+            .updateProduct(_existingProduct.id, _existingProduct);
+        print(_existingProduct.title);
+      }
       Navigator.of(context).pop();
     } else {
       return;
@@ -47,8 +66,37 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+
+    if (isFirsttime) {
+      final String productId =
+          ModalRoute.of(context).settings.arguments as String;
+      if (productId != null) {
+        print(productId);
+
+        final _existPIndex = Provider.of<Products>(context)
+            .productList
+            .indexWhere((element) => element.id == productId);
+        _existingProduct =
+            Provider.of<Products>(context).productList[_existPIndex];
+
+        productDetails = {
+          'title': _existingProduct.title,
+          'id': _existingProduct.id,
+          'description': _existingProduct.description,
+          'price': _existingProduct.price.toString(),
+          'imageUrl': '',
+        };
+        imageController.text = _existingProduct.imageUrl;
+      }
+    }
+    isFirsttime = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('rebuild');
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -70,8 +118,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
               child: ListView(
                 children: [
                   TextFormField(
+                    initialValue: productDetails['title'],
                     decoration: InputDecoration(
-                      labelText: 'Name',
+                      labelText: 'Title',
                     ),
                     validator: (value) {
                       if (value.isEmpty) {
@@ -90,10 +139,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         id: _existingProduct.id,
                         imageUrl: _existingProduct.imageUrl,
                         description: _existingProduct.description,
+                        isFavorite: _existingProduct.isFavorite,
                       );
                     },
                   ),
                   TextFormField(
+                    initialValue: productDetails['price'],
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Enter product price';
@@ -122,10 +173,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         id: _existingProduct.id,
                         imageUrl: _existingProduct.imageUrl,
                         description: _existingProduct.description,
+                        isFavorite: _existingProduct.isFavorite,
                       );
                     },
                   ),
                   TextFormField(
+                    initialValue: productDetails['description'],
                     decoration: InputDecoration(
                       labelText: 'Description',
                     ),
@@ -148,6 +201,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         id: _existingProduct.id,
                         imageUrl: _existingProduct.imageUrl,
                         description: value,
+                        isFavorite: _existingProduct.isFavorite,
                       );
                     },
                   ),
@@ -204,6 +258,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 id: _existingProduct.id,
                                 imageUrl: value,
                                 description: _existingProduct.description,
+                                isFavorite: _existingProduct.isFavorite,
                               );
                             },
                           ),
