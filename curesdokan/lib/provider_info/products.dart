@@ -87,38 +87,37 @@ class Products with ChangeNotifier {
     ),
   ];
 
-  addProduct(Product product) async{
-    final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json";
-    var respose = await http.post(url,
-        body: json.encode({
-          'title': product.title,
-          'description': product.description,
-          'price': product.price,
-          'imageUrl': product.imageUrl,
-          'isFavorite': product.isFavorite,
-        }));
+  Future<void> addProduct(Product product) async {
+    try {
+      final url =
+          "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json";
+      var respose = await http.post(url,
+          body: json.encode({
+            'title': product.title,
+            'description': product.description,
+            'price': product.price,
+            'imageUrl': product.imageUrl,
+            'isFavorite': product.isFavorite,
+          }));
 
-     if(respose.statusCode==200){
-       print(respose.body);
+      if (respose.statusCode == 200) {
+        print(respose.body);
 
-       Product _newProduct = Product(
-         title: product.title,
-         price: product.price,
-         imageUrl: product.imageUrl,
-         id: json.decode(respose.body)['name'],
-         description: product.description,
-       );
+        Product _newProduct = Product(
+          title: product.title,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          id: json.decode(respose.body)['name'],
+          description: product.description,
+        );
 
-       _list.add(_newProduct);
-     }
-     else{
-       print('error request');
-     }
-
-
-
-
+        _list.add(_newProduct);
+      } else {
+        print('error request');
+      }
+    } catch (error) {
+      throw error;
+    }
     notifyListeners();
   }
 
