@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/data_model.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Products with ChangeNotifier {
   List<Product> _list = [
@@ -85,16 +87,37 @@ class Products with ChangeNotifier {
     ),
   ];
 
-  addProduct(Product product) {
-    Product _newProduct = Product(
-      title: product.title,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      id: DateTime.now().toString(),
-      description: product.description,
-    );
+  addProduct(Product product) async{
+    final url =
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json";
+    var respose = await http.post(url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+          'isFavorite': product.isFavorite,
+        }));
 
-    _list.add(_newProduct);
+     if(respose.statusCode==200){
+       print(respose.body);
+
+       Product _newProduct = Product(
+         title: product.title,
+         price: product.price,
+         imageUrl: product.imageUrl,
+         id: json.decode(respose.body)['name'],
+         description: product.description,
+       );
+
+       _list.add(_newProduct);
+     }
+     else{
+       print('error request');
+     }
+
+
+
 
     notifyListeners();
   }
