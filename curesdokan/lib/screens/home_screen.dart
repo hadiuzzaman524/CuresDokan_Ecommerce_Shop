@@ -1,3 +1,4 @@
+import 'package:curesdokan/provider_info/products.dart';
 import 'package:curesdokan/screens/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isFavorite = false;
+  bool firstTime = true;
+  bool isLoading = true;
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (firstTime) {
+      await Provider.of<Products>(context).fetchProduct();
+    }
+    firstTime = false;
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +95,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: GridItem(
-          isFev: isFavorite,
-        ),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : GridItem(
+                isFev: isFavorite,
+              ),
       ),
     );
   }

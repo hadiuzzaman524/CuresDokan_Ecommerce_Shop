@@ -68,9 +68,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
         print('success');
       } else {
         //updateProduct
-        Provider.of<Products>(context, listen: false)
+       await Provider.of<Products>(context, listen: false)
             .updateProduct(_existingProduct.id, _existingProduct);
-        print(_existingProduct.title);
+
         Navigator.of(context).pop();
       }
     } else {
