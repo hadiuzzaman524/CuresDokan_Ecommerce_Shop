@@ -6,7 +6,14 @@ import 'order_screen.dart';
 import '../provider_info/order.dart';
 import 'package:toast/toast.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  bool orders = false;
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
@@ -46,24 +53,39 @@ class CartScreen extends StatelessWidget {
                           ),
                         ),
                         FlatButton(
-                          onPressed: () {
-                            if (cart.cartLength > 0) {
-                              order.addItem(
-                                  cart.totalPrice, cart.items.values.toList());
-                              Toast.show("Your order is received", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-                              cart.clear();
-                            }
-                            else{
-                              Toast.show("Cart is empty", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-                            }
-                          },
-                          child: Text(
-                            'Order Now',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.blue,
-                            ),
-                          ),
+                          onPressed: orders
+                              ? null
+                              : () async {
+                                  if (cart.cartLength > 0) {
+                                    setState(() {
+                                      orders = true;
+                                    });
+
+                                    await order.addItem(cart.totalPrice,
+                                        cart.items.values.toList());
+                                    Toast.show(
+                                        "Your order is received", context,
+                                        duration: Toast.LENGTH_SHORT,
+                                        gravity: Toast.BOTTOM);
+                                    cart.clear();
+                                    setState(() {
+                                      orders = false;
+                                    });
+                                  } else {
+                                    Toast.show("Cart is empty", context,
+                                        duration: Toast.LENGTH_SHORT,
+                                        gravity: Toast.BOTTOM);
+                                  }
+                                },
+                          child: orders
+                              ? CircularProgressIndicator()
+                              : Text(
+                                  'Order Now',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.blue,
+                                  ),
+                                ),
                         )
                       ],
                     ),
