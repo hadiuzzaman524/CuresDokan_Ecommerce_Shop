@@ -15,6 +15,16 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   bool expanded = false;
+  bool isFirst=true;
+
+  @override
+  void didChangeDependencies() async{
+    super.didChangeDependencies();
+    if(isFirst){
+      await Provider.of<Order>(context,listen: false).fetchOrder();
+    }
+    isFirst=false;
+  }
 
   @override
   Widget build(BuildContext context) {

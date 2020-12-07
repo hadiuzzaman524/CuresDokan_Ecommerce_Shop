@@ -22,6 +22,7 @@ class Order with ChangeNotifier {
     final response = await http.post(url,
         body: json.encode({
           'total': total,
+          'dateTime': date.toIso8601String(),
           'cartItems': list
               .map((p) => {
                     'id': p.id,
@@ -30,9 +31,8 @@ class Order with ChangeNotifier {
                     'price': p.price,
                   })
               .toList(),
-          'dateTime': date.toIso8601String(),
         }));
-    if(response.statusCode==200){
+    if (response.statusCode == 200) {
       _items.add(
         OrderItem(
           total: total,
@@ -43,7 +43,41 @@ class Order with ChangeNotifier {
       );
       notifyListeners();
     }
+  }
 
+  Future<void> fetchOrder() async {
+    List<OrderItem> templist = [];
+    final url =
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/orders.json";
+    try {
+      http.get(url).then((response) {
+        if (response.statusCode == 200) {
+          final extertData = json.decode(response.body) as Map<String, dynamic>;
+          extertData.forEach((id, order) {
+            templist.add(OrderItem(
+              id: id,
+              total: order['total'],
+              dateTime: DateTime.parse(order['dateTime']),
+              cartItems: (order['cartItems'] as List<dynamic>).map((e) {
+                return CartItem(
+                  id: e['id'],
+                  price: e['price'],
+                  title: e['title'],
+                  quantity: e['quantity'],
+                );
+              }).toList(),
+            ));
+          });
+
+         _items=[...templist];
+          notifyListeners();
+        } else {
+          print('Error to return Orders');
+        }
+      });
+    } catch (error) {
+      print(error);
+    }
   }
 
   List<OrderItem> get allOrder {
