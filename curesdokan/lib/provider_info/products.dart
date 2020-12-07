@@ -143,7 +143,15 @@ class Products with ChangeNotifier {
   }
 
   deleteProduct(String id) {
-    _list.removeWhere((element) => element.id == id);
+    final url =
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan/$id.json";
+
+    final index = _list.indexWhere((element) => element.id == id);
+    var existingProduct=_list[index];
+    http.delete(url).catchError((_){
+      _list[index]=existingProduct;
+    });
+  _list.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 

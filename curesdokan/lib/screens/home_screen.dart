@@ -36,6 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> refresh(BuildContext context) async {
+    await Provider.of<Products>(context).fetchProduct();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -99,8 +103,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : GridItem(
-                isFev: isFavorite,
+            : RefreshIndicator(
+                onRefresh: () => refresh(context),
+                child: GridItem(
+                  isFev: isFavorite,
+                ),
               ),
       ),
     );

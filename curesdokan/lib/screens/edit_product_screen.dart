@@ -59,13 +59,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
               .addProduct(_existingProduct);
           setState(() {
             isLoading = false;
-            print('Please Wait');
           });
           Navigator.of(context).pop();
         } catch (error) {
 
         }
-        print('success');
       } else {
         //updateProduct
        await Provider.of<Products>(context, listen: false)
