@@ -8,6 +8,7 @@ import './screens/details_screen.dart';
 import './screens/order_screen.dart';
 import './screens/my_product_screen.dart';
 import './screens/edit_product_screen.dart';
+import './screens/registration_screen.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -41,13 +42,14 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: HomeScreen.routeName,
+      initialRoute: RegistrationScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         DetailsScreen.routeName: (context) => DetailsScreen(),
         OrderScreen.routeName: (context) => OrderScreen(),
         MyProductScreen.routeName: (context) => MyProductScreen(),
         EditProductScreen.routeName: (context) => EditProductScreen(),
+        RegistrationScreen.routeName:(context)=>RegistrationScreen(),
       },
     );
   }
