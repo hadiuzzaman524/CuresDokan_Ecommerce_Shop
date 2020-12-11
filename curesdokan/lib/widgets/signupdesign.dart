@@ -13,35 +13,58 @@ class _SignUpDesignState extends State<SignUpDesign> {
   var _emailFocus = FocusNode();
   var _passwordFocus = FocusNode();
   var _confirmFocus = FocusNode();
-  bool isStarted=false;
+  bool isStarted = false;
 
   String _email;
   String _password;
   String _confirmPassword;
   String errorMessage;
 
-  _saveData() async {
+  void errorDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (ctx)=>AlertDialog(
+          title: Text('An error occured!'),
+          content: Text(errorMessage),
+          actions: [
+            FlatButton(onPressed: (){
+              Navigator.of(ctx).pop();
+            }, child: Text('Ok'))
+          ],
+        ));
+  }
+
+  _saveData(BuildContext context) async {
     formKey.currentState.save();
     bool isValid = formKey.currentState.validate();
     if (isValid) {
       // valid email and password here
       setState(() {
-        isStarted=true;
+        isStarted = true;
       });
 
       try {
         await Provider.of<Auth>(context, listen: false)
             .SignUp(_email, _password);
       } on HttpException catch (error) {
-        print(error);
+        if (error.toString().contains('EMAIL_EXISTS')) {
+          errorMessage =
+              "The email address is already in use by another account";
+        } else if (error.toString().contains('OPERATION_NOT_ALLOWED')) {
+          errorMessage = 'Password sign-in is disabled for this project.';
+        } else if (error.toString().contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+          errorMessage =
+              ' We have blocked all requests from this device due to unusual activity. Try again later.';
+        }
+        errorDialog(context);
       } catch (error) {
+        errorMessage='An error occurred by Internet connection';
         print(error);
       }
     }
     setState(() {
-      isStarted=false;
+      isStarted = false;
     });
-
   }
 
   @override
@@ -121,7 +144,7 @@ class _SignUpDesignState extends State<SignUpDesign> {
                   _confirmPassword = value;
                 },
                 onFieldSubmitted: (_) {
-                  _saveData();
+                  _saveData(context);
                 },
               ),
               Container(
@@ -129,7 +152,7 @@ class _SignUpDesignState extends State<SignUpDesign> {
                 child: GestureDetector(
                   onTap: () {
                     //
-                    _saveData();
+                    _saveData(context);
                   },
                   child: Container(
                     width: double.infinity,
@@ -141,14 +164,17 @@ class _SignUpDesignState extends State<SignUpDesign> {
                       ),
                     ),
                     child: Center(
-                      child:isStarted?CircularProgressIndicator(backgroundColor: Colors.white):Text(
-                        'Register',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: isStarted
+                          ? CircularProgressIndicator(
+                              backgroundColor: Colors.white)
+                          : Text(
+                              'Register',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ),

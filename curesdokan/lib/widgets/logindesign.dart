@@ -1,5 +1,8 @@
+import 'package:curesdokan/httpexception.dart';
+import 'package:curesdokan/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../provider_info/auth.dart';
+import 'package:provider/provider.dart';
 
 class LoginDesign extends StatefulWidget {
   @override
@@ -12,15 +15,55 @@ class _LoginDesignState extends State<LoginDesign> {
 
   String _email;
   String _password;
-  bool isShowing=false;
+  bool isShowing = false;
+  bool isLoading = false;
+  String errorMessage;
 
-  _saveData() {
+  showErrorDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('An error occurred!'),
+              content: Text(errorMessage),
+              actions: [
+                FlatButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text('Ok'),
+                ),
+              ],
+            ));
+  }
+
+  _saveData(BuildContext context) async {
     _formKey.currentState.save();
     bool isValid = _formKey.currentState.validate();
     if (isValid) {
       // valid email and password here
-      print(_email);
-      print(_password);
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        await Provider.of<Auth>(context, listen: false)
+            .logIn(_email, _password);
+        Navigator.pushReplacementNamed(context,HomeScreen.routeName );
+      } on HttpException catch (error) {
+        if (error.toString().contains('EMAIL_NOT_FOUND')) {
+          errorMessage =
+              'There is no user record corresponding to this identifier. The user may have been deleted.';
+        } else if (error.toString().contains('INVALID_PASSWORD')) {
+          errorMessage =
+              'The password is invalid or the user does not have a password.';
+        } else if (error.toString().contains('USER_DISABLED')) {
+          errorMessage =
+              'The user account has been disabled by an administrator.';
+        }
+        showErrorDialog(context);
+      } catch (error) {
+        errorMessage = 'An error occurred by Internet connection';
+      }
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -58,13 +101,16 @@ class _LoginDesignState extends State<LoginDesign> {
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                 labelText: 'Password',
-                suffixIcon: GestureDetector(child:isShowing?Icon(Icons.remove_red_eye):Icon(Icons.remove_red_eye_outlined),
-                onTap: (){
-                  setState(() {
-                    isShowing=!isShowing;
-                  });
-
-                },),
+                suffixIcon: GestureDetector(
+                  child: isShowing
+                      ? Icon(Icons.remove_red_eye)
+                      : Icon(Icons.remove_red_eye_outlined),
+                  onTap: () {
+                    setState(() {
+                      isShowing = !isShowing;
+                    });
+                  },
+                ),
               ),
               obscureText: isShowing,
               focusNode: _passwordFocus,
@@ -81,7 +127,7 @@ class _LoginDesignState extends State<LoginDesign> {
                 _password = value;
               },
               onFieldSubmitted: (_) {
-                _saveData();
+                _saveData(context);
               },
             ),
             Container(
@@ -89,7 +135,7 @@ class _LoginDesignState extends State<LoginDesign> {
               child: GestureDetector(
                 onTap: () {
                   //
-                  _saveData();
+                  _saveData(context);
                 },
                 child: Container(
                   width: double.infinity,
@@ -101,14 +147,18 @@ class _LoginDesignState extends State<LoginDesign> {
                     ),
                   ),
                   child: Center(
-                    child: Text(
-                      'Log In',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: isLoading
+                        ? CircularProgressIndicator(
+                            backgroundColor: Colors.white,
+                          )
+                        : Text(
+                            'Log In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ),
