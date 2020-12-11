@@ -1,4 +1,7 @@
+import 'package:curesdokan/httpexception.dart';
 import 'package:flutter/material.dart';
+import '../provider_info/auth.dart';
+import 'package:provider/provider.dart';
 
 class SignUpDesign extends StatefulWidget {
   @override
@@ -7,26 +10,40 @@ class SignUpDesign extends StatefulWidget {
 
 class _SignUpDesignState extends State<SignUpDesign> {
   final formKey = GlobalKey<FormState>();
-  var _emailFocus=FocusNode();
-  var _passwordFocus=FocusNode();
-  var _confirmFocus=FocusNode();
+  var _emailFocus = FocusNode();
+  var _passwordFocus = FocusNode();
+  var _confirmFocus = FocusNode();
+  bool isStarted=false;
 
   String _email;
   String _password;
   String _confirmPassword;
+  String errorMessage;
 
-
-  _saveData(){
+  _saveData() async {
     formKey.currentState.save();
-    bool isValid=formKey.currentState.validate();
-    if(isValid){
+    bool isValid = formKey.currentState.validate();
+    if (isValid) {
       // valid email and password here
-      print(_email);
-      print(_password);
+      setState(() {
+        isStarted=true;
+      });
 
+      try {
+        await Provider.of<Auth>(context, listen: false)
+            .SignUp(_email, _password);
+      } on HttpException catch (error) {
+        print(error);
+      } catch (error) {
+        print(error);
+      }
     }
+    setState(() {
+      isStarted=false;
+    });
 
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -51,10 +68,10 @@ class _SignUpDesignState extends State<SignUpDesign> {
                   }
                   return null;
                 },
-                onSaved: (value){
-                  _email=value;
+                onSaved: (value) {
+                  _email = value;
                 },
-                onFieldSubmitted: (_){
+                onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_passwordFocus);
                 },
               ),
@@ -74,10 +91,10 @@ class _SignUpDesignState extends State<SignUpDesign> {
                   }
                   return null;
                 },
-                onSaved: (value){
-                  _password=value;
+                onSaved: (value) {
+                  _password = value;
                 },
-                onFieldSubmitted: (_){
+                onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_confirmFocus);
                 },
               ),
@@ -95,15 +112,15 @@ class _SignUpDesignState extends State<SignUpDesign> {
                   if (value.length < 6) {
                     return 'Password must be 6 character long';
                   }
-                  if(_password!=value){
+                  if (_password != value) {
                     return 'Your password can\'t match';
                   }
                   return null;
                 },
-                onSaved: (value){
-                  _confirmPassword=value;
+                onSaved: (value) {
+                  _confirmPassword = value;
                 },
-                onFieldSubmitted: (_){
+                onFieldSubmitted: (_) {
                   _saveData();
                 },
               ),
@@ -124,7 +141,7 @@ class _SignUpDesignState extends State<SignUpDesign> {
                       ),
                     ),
                     child: Center(
-                      child: Text(
+                      child:isStarted?CircularProgressIndicator(backgroundColor: Colors.white):Text(
                         'Register',
                         style: TextStyle(
                           color: Colors.white,

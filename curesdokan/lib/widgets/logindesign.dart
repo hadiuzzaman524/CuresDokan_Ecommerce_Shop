@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginDesign extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class _LoginDesignState extends State<LoginDesign> {
 
   String _email;
   String _password;
+  bool isShowing=false;
 
   _saveData() {
     _formKey.currentState.save();
@@ -36,7 +38,7 @@ class _LoginDesignState extends State<LoginDesign> {
                 labelText: 'Email',
               ),
               textInputAction: TextInputAction.next,
-              validator: (value){
+              validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter your email';
                 }
@@ -45,32 +47,40 @@ class _LoginDesignState extends State<LoginDesign> {
                 }
                 return null;
               },
-              onFieldSubmitted: (_){
+              onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_passwordFocus);
               },
-              onSaved: (value){
-                _email=value;
+              onSaved: (value) {
+                _email = value;
               },
             ),
             TextFormField(
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                 labelText: 'Password',
+                suffixIcon: GestureDetector(child:isShowing?Icon(Icons.remove_red_eye):Icon(Icons.remove_red_eye_outlined),
+                onTap: (){
+                  setState(() {
+                    isShowing=!isShowing;
+                  });
+
+                },),
               ),
+              obscureText: isShowing,
               focusNode: _passwordFocus,
-              validator: (value){
-                if(value.isEmpty){
+              validator: (value) {
+                if (value.isEmpty) {
                   return 'Please enter password';
                 }
-                if(value.length<6){
+                if (value.length < 6) {
                   return 'Password must be in 6 character long';
                 }
                 return null;
               },
-              onSaved: (value){
-                _password=value;
+              onSaved: (value) {
+                _password = value;
               },
-              onFieldSubmitted: (_){
+              onFieldSubmitted: (_) {
                 _saveData();
               },
             ),

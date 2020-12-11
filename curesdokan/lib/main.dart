@@ -1,3 +1,4 @@
+import 'package:curesdokan/provider_info/auth.dart';
 import 'package:curesdokan/provider_info/cart.dart';
 import 'package:curesdokan/provider_info/order.dart';
 import 'package:curesdokan/provider_info/products.dart';
@@ -21,6 +22,9 @@ void main() {
       ),
       ChangeNotifierProvider(
         create: (_) => Order(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => Auth(),
       ),
     ],
     child: MyApp(),
@@ -49,7 +53,7 @@ class MyApp extends StatelessWidget {
         OrderScreen.routeName: (context) => OrderScreen(),
         MyProductScreen.routeName: (context) => MyProductScreen(),
         EditProductScreen.routeName: (context) => EditProductScreen(),
-        RegistrationScreen.routeName:(context)=>RegistrationScreen(),
+        RegistrationScreen.routeName: (context) => RegistrationScreen(),
       },
     );
   }
