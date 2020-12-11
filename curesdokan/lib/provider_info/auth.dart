@@ -7,9 +7,19 @@ import 'dart:convert';
 import '../httpexception.dart';
 
 class Auth with ChangeNotifier {
-  String email;
-  String password;
-  String token;
+  String _id;
+  DateTime _exparytime;
+  String _token;
+
+  bool get isAuth{
+    return _token!=null;
+  }
+  String get getToken{
+    if(_exparytime !=null && _exparytime.isAfter(DateTime.now()) && _token!=null){
+      return _token;
+    }
+    return null;
+  }
 
   Future<void> SignUp(String email, String password) async {
     final url =
@@ -24,6 +34,11 @@ class Auth with ChangeNotifier {
 
       //print(json.decode(response.body));
       final extertedData = json.decode(response.body);
+      _token = extertedData['idToken'];
+      _exparytime = DateTime.now()
+          .add(Duration(seconds: int.parse(extertedData['expiresIn'])));
+      _id = extertedData['localId'];
+      notifyListeners();
 
       if (extertedData['error'] != null) {
         final errorData = extertedData['error']['message'];
@@ -46,6 +61,12 @@ class Auth with ChangeNotifier {
             'returnSecureToken': true,
           }));
       final extertedData = json.decode(response.body);
+      _token = extertedData['idToken'];
+      _exparytime = DateTime.now()
+          .add(Duration(seconds: int.parse(extertedData['expiresIn'])));
+      _id = extertedData['localId'];
+      notifyListeners();
+
       if (extertedData['error'] != null) {
         final errorData = extertedData['error']['message'];
         throw HttpException(errorData);

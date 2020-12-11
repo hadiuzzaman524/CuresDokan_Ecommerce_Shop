@@ -6,11 +6,13 @@ import 'dart:convert';
 class Products with ChangeNotifier {
   List<Product> _list = [
   ];
+  final _token;
+  Products(this._token,this._list);
 
   Future<void> addProduct(Product product) async {
     try {
       final url =
-          "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json";
+          "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json?auth=$_token";
       var respose = await http.post(url,
           body: json.encode({
             'title': product.title,
@@ -44,7 +46,7 @@ class Products with ChangeNotifier {
   Future<void> fetchProduct() async {
     List<Product> temp = [];
     final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json";
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json?auth=$_token";
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final extertedData = json.decode(response.body) as Map<String, dynamic>;
@@ -64,7 +66,7 @@ class Products with ChangeNotifier {
 
   deleteProduct(String id) {
     final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan/$id.json";
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan/$id.json?auth=$_token";
 
     final index = _list.indexWhere((element) => element.id == id);
     var existingProduct=_list[index];
@@ -77,7 +79,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product product) async {
     final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan/$id.json";
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan/$id.json?auth=$_token";
 
     final index = _list.indexWhere((element) => element.id == id);
     await http.patch(url,

@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> refresh(BuildContext context) async {
-    await Provider.of<Products>(context).fetchProduct();
+    await Provider.of<Products>(context,listen: false).fetchProduct();
   }
 
   @override

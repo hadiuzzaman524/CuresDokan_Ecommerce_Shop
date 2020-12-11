@@ -15,16 +15,26 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
-        create: (_) => Products(),
+        create: (_) => Auth(),
+      ),
+      /*
+      When need one provider class data to another then we can pass data easily using
+      proxyprovider. in proxyprovider taken two argument first one is provide value,
+      and second one is user of this value.
+      update () taken three argument context, provided class object and user class previous created object.
+
+       */
+      ChangeNotifierProxyProvider<Auth, Products>(
+        update: (ctx, auth, previousProduct) => Products(
+          auth.getToken,
+          previousProduct == null ? [] : previousProduct.productList,
+        ),
       ),
       ChangeNotifierProvider(
         create: (_) => Cart(),
       ),
       ChangeNotifierProvider(
         create: (_) => Order(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => Auth(),
       ),
     ],
     child: MyApp(),
