@@ -61,12 +61,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
             isLoading = false;
           });
           Navigator.of(context).pop();
-        } catch (error) {
-
-        }
+        } catch (error) {}
       } else {
         //updateProduct
-       await Provider.of<Products>(context, listen: false)
+        await Provider.of<Products>(context, listen: false)
             .updateProduct(_existingProduct.id, _existingProduct);
 
         Navigator.of(context).pop();

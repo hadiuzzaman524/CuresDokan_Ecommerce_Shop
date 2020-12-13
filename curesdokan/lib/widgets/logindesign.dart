@@ -34,7 +34,7 @@ class _LoginDesignState extends State<LoginDesign> {
             ));
   }
 
-  _saveData(BuildContext context) async {
+ Future<void> _saveData(BuildContext context) async {
     _formKey.currentState.save();
     bool isValid = _formKey.currentState.validate();
     if (isValid) {
@@ -45,7 +45,6 @@ class _LoginDesignState extends State<LoginDesign> {
       try {
         await Provider.of<Auth>(context, listen: false)
             .logIn(_email, _password);
-        Navigator.pushReplacementNamed(context,HomeScreen.routeName );
       } on HttpException catch (error) {
         if (error.toString().contains('EMAIL_NOT_FOUND')) {
           errorMessage =

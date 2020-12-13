@@ -4,10 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Products with ChangeNotifier {
-  List<Product> _list = [
-  ];
+  List<Product> _list = [];
   final _token;
-  Products(this._token,this._list);
+  final _userId;
+
+  Products(this._token, this._userId, this._list);
 
   Future<void> addProduct(Product product) async {
     try {
@@ -19,7 +20,6 @@ class Products with ChangeNotifier {
             'description': product.description,
             'price': product.price,
             'imageUrl': product.imageUrl,
-            'isFavorite': product.isFavorite,
           }));
 
       if (respose.statusCode == 200) {
@@ -50,14 +50,21 @@ class Products with ChangeNotifier {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final extertedData = json.decode(response.body) as Map<String, dynamic>;
+      final favUrl =
+          "https://curesdokan-5b82e-default-rtdb.firebaseio.com/Userfavorite/$_userId.json?auth=$_token";
+      final favResponse =
+          await http.get(favUrl).catchError((error) => print(error));
+      final favData = json.decode(favResponse.body);
+
       extertedData.forEach((productId, productData) {
         temp.add(Product(
-            id: productId,
-            title: productData['title'],
-            description: productData['description'],
-            price: productData['price'],
-            imageUrl: productData['imageUrl'],
-            isFavorite: productData['isFavorite']));
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          price: productData['price'],
+          imageUrl: productData['imageUrl'],
+          isFavorite: favData==null?false:favData[productId] ?? false,
+        ));
       });
     }
     _list = temp;
@@ -69,11 +76,11 @@ class Products with ChangeNotifier {
         "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan/$id.json?auth=$_token";
 
     final index = _list.indexWhere((element) => element.id == id);
-    var existingProduct=_list[index];
-    http.delete(url).catchError((_){
-      _list[index]=existingProduct;
+    var existingProduct = _list[index];
+    http.delete(url).catchError((_) {
+      _list[index] = existingProduct;
     });
-  _list.removeWhere((element) => element.id == id);
+    _list.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 

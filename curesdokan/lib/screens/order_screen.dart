@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../provider_info/order.dart';
 import 'package:intl/intl.dart';
 import '../widgets/expanded.dart';
+import '../utilities/order_details.dart';
 
 class OrderScreen extends StatefulWidget {
   static const routeName = '/orders';
@@ -15,15 +16,15 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   bool expanded = false;
-  bool isFirst=true;
+  bool isFirst = true;
 
   @override
-  void didChangeDependencies() async{
+  void didChangeDependencies() async {
     super.didChangeDependencies();
-    if(isFirst){
-      await Provider.of<Order>(context,listen: false).fetchOrder();
+    if (isFirst) {
+      await Provider.of<Order>(context, listen: false).fetchOrder();
     }
-    isFirst=false;
+    isFirst = false;
   }
 
   @override
@@ -42,39 +43,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     elevation: 4,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              radius: 30,
-                              child: FittedBox(
-                                child: Text(
-                                  '${order.allOrder[index].total.toStringAsFixed(0)}৳',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            title: Text(DateFormat('dd-mm-yy,  hh:mm')
-                                .format(order.allOrder[index].dateTime)),
-                            trailing: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  expanded = !expanded;
-                                });
-                              },
-                              child: expanded
-                                  ? Icon(Icons.expand_more)
-                                  : Icon(Icons.expand_less),
-                            ),
-                          ),
-                          if (expanded)
-                            ExpandedOrder(order: order,index:index),
-                        ],
-                      ),
+                      child: OrderDetails(index, order),
                     ),
                   );
                 },

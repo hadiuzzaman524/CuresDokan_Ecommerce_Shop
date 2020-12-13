@@ -13,12 +13,14 @@ class OrderItem {
 }
 
 class Order with ChangeNotifier {
+  Order(this._token,this._items);
   List<OrderItem> _items = [];
+  final _token;
 
   Future<void> addItem(double total, List<CartItem> list) async {
     final date = DateTime.now();
     final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/orders.json";
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/orders.json?auth=$_token";
     final response = await http.post(url,
         body: json.encode({
           'total': total,
@@ -48,7 +50,7 @@ class Order with ChangeNotifier {
   Future<void> fetchOrder() async {
     List<OrderItem> templist = [];
     final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/orders.json";
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/orders.json?auth=$_token";
     try {
       http.get(url).then((response) {
         if (response.statusCode == 200) {

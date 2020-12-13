@@ -1,3 +1,4 @@
+import 'package:curesdokan/models/data_model.dart';
 import 'package:curesdokan/provider_info/auth.dart';
 import 'package:curesdokan/provider_info/cart.dart';
 import 'package:curesdokan/provider_info/order.dart';
@@ -27,14 +28,16 @@ void main() {
       ChangeNotifierProxyProvider<Auth, Products>(
         update: (ctx, auth, previousProduct) => Products(
           auth.getToken,
+          auth.getUserId,
           previousProduct == null ? [] : previousProduct.productList,
         ),
       ),
       ChangeNotifierProvider(
         create: (_) => Cart(),
       ),
-      ChangeNotifierProvider(
-        create: (_) => Order(),
+      ChangeNotifierProxyProvider<Auth, Order>(
+        update: (ctx, auth, previousOrder) => Order(
+            auth.getToken, previousOrder == null ? [] : previousOrder.allOrder),
       ),
     ],
     child: MyApp(),
@@ -44,26 +47,30 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.purple,
-        accentColor: Colors.purpleAccent,
-        textTheme: TextTheme(
-          headline1: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+    return Consumer<Auth>(
+      builder: (ctx, auth, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: Colors.purple,
+            accentColor: Colors.purpleAccent,
+            textTheme: TextTheme(
+              headline1: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-        ),
-      ),
-      initialRoute: RegistrationScreen.routeName,
-      routes: {
-        HomeScreen.routeName: (context) => HomeScreen(),
-        DetailsScreen.routeName: (context) => DetailsScreen(),
-        OrderScreen.routeName: (context) => OrderScreen(),
-        MyProductScreen.routeName: (context) => MyProductScreen(),
-        EditProductScreen.routeName: (context) => EditProductScreen(),
-        RegistrationScreen.routeName: (context) => RegistrationScreen(),
+          home: auth.isAuth ? HomeScreen() : RegistrationScreen(),
+          routes: {
+            HomeScreen.routeName: (context) => HomeScreen(),
+            DetailsScreen.routeName: (context) => DetailsScreen(),
+            OrderScreen.routeName: (context) => OrderScreen(),
+            MyProductScreen.routeName: (context) => MyProductScreen(),
+            EditProductScreen.routeName: (context) => EditProductScreen(),
+            RegistrationScreen.routeName: (context) => RegistrationScreen(),
+          },
+        );
       },
     );
   }

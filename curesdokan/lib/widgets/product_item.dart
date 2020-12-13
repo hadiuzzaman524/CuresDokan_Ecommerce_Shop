@@ -1,4 +1,5 @@
 import 'package:curesdokan/models/data_model.dart';
+import 'package:curesdokan/provider_info/auth.dart';
 import 'package:curesdokan/screens/details_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class _ProductItemDesignState extends State<ProductItemDesign> {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final _token=Provider.of<Auth>(context,listen: false).getToken;
+    final _userId=Provider.of<Auth>(context,listen: false).getUserId;
     return ClipRRect(
       borderRadius: BorderRadius.all(
         Radius.circular(10),
@@ -41,7 +44,7 @@ class _ProductItemDesignState extends State<ProductItemDesign> {
             children: [
               GestureDetector(
                 onTap: () {
-                  product.toggleFav();
+                  product.toggleFav(_token,_userId);
                 },
                 child: Consumer<Product>(
                   /*

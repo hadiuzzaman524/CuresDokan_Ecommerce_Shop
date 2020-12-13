@@ -19,18 +19,16 @@ class Product extends ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  Future<void> toggleFav() async{
+  Future<void> toggleFav(String _token,String userId) async{
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan/$id.json";
-    await http.patch(
+        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/Userfavorite/$userId/$id.json?auth=$_token";
+    await http.put(
       url,
       body: json.encode(
-        {
-          'isFavorite':isFavorite,
-        },
+          isFavorite,
       ),
     ).catchError((error){
       isFavorite=oldStatus;

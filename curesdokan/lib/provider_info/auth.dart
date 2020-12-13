@@ -11,15 +11,31 @@ class Auth with ChangeNotifier {
   DateTime _exparytime;
   String _token;
 
-  bool get isAuth{
-    return _token!=null;
+  bool get isAuth {
+    if (_token != null) {
+      return true;
+    }
+    return false;
   }
-  String get getToken{
-    if(_exparytime !=null && _exparytime.isAfter(DateTime.now()) && _token!=null){
+
+  String get getToken {
+    if (_exparytime != null &&
+        _exparytime.isAfter(DateTime.now()) &&
+        _token != null) {
       return _token;
     }
     return null;
   }
+
+  String get getUserId {
+    if (_exparytime != null &&
+        _exparytime.isAfter(DateTime.now()) &&
+        _token != null) {
+      return _id;
+    }
+    return null;
+  }
+
 
   Future<void> SignUp(String email, String password) async {
     final url =
@@ -35,8 +51,13 @@ class Auth with ChangeNotifier {
       //print(json.decode(response.body));
       final extertedData = json.decode(response.body);
       _token = extertedData['idToken'];
-      _exparytime = DateTime.now()
-          .add(Duration(seconds: int.parse(extertedData['expiresIn'])));
+      try {
+        _exparytime = DateTime.now()
+            .add(Duration(seconds: int.parse(extertedData['expiresIn'])));
+      } catch (e) {
+        print(e);
+      }
+
       _id = extertedData['localId'];
       notifyListeners();
 
@@ -61,9 +82,15 @@ class Auth with ChangeNotifier {
             'returnSecureToken': true,
           }));
       final extertedData = json.decode(response.body);
+
       _token = extertedData['idToken'];
-      _exparytime = DateTime.now()
-          .add(Duration(seconds: int.parse(extertedData['expiresIn'])));
+      try {
+        _exparytime = DateTime.now()
+            .add(Duration(seconds: int.parse(extertedData['expiresIn'])));
+      } catch (e) {
+        print(e);
+      }
+
       _id = extertedData['localId'];
       notifyListeners();
 
