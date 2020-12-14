@@ -8,13 +8,13 @@ import '../widgets/single_product.dart';
 class MyProductScreen extends StatelessWidget {
   static const routeName = '/MyProductScreen';
 
- Future<void> refress(BuildContext context) async{
-    await Provider.of<Products>(context,listen: false).fetchProduct(false);
+  Future<void> refress(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchProduct(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    final products = Provider.of<Products>(context);
+    //final products = Provider.of<Products>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -30,27 +30,38 @@ class MyProductScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: RefreshIndicator(
-          onRefresh: () => refress(context),
-          child: Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height,
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    ShowSingleProduct(
-                      id: products.productList[index].id,
-                      title: products.productList[index].title,
-                      imageUrl: products.productList[index].imageUrl,
+        body: FutureBuilder(
+          future: refress(context),
+          builder: (ctx, snapshoot) =>
+              snapshoot.connectionState == ConnectionState.waiting
+                  ? Center(child: CircularProgressIndicator())
+                  : RefreshIndicator(
+                      onRefresh: () => refress(context),
+                      child: Consumer<Products>(
+                        builder: (ctx, products, _) {
+                          return Container(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height,
+                            child: ListView.builder(
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    ShowSingleProduct(
+                                      id: products.productList[index].id,
+                                      title: products.productList[index].title,
+                                      imageUrl:
+                                          products.productList[index].imageUrl,
+                                    ),
+                                    Divider(),
+                                  ],
+                                );
+                              },
+                              itemCount: products.productList.length,
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                    Divider(),
-                  ],
-                );
-              },
-              itemCount: products.productList.length,
-            ),
-          ),
         ),
       ),
     );
