@@ -20,6 +20,7 @@ class Products with ChangeNotifier {
             'description': product.description,
             'price': product.price,
             'imageUrl': product.imageUrl,
+            'userId': _userId,
           }));
 
       if (respose.statusCode == 200) {
@@ -43,10 +44,17 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchProduct() async {
+  Future<void> fetchProduct(bool allProduct) async {
     List<Product> temp = [];
+    String query;
+    if (allProduct) {
+      query = "";
+    } else {
+      query = '&orderBy="userId"&equalTo="$_userId"';
+    }
+
     final url =
-        "https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json?auth=$_token";
+        'https://curesdokan-5b82e-default-rtdb.firebaseio.com/curesdokan.json?auth=$_token$query';
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final extertedData = json.decode(response.body) as Map<String, dynamic>;
@@ -63,7 +71,7 @@ class Products with ChangeNotifier {
           description: productData['description'],
           price: productData['price'],
           imageUrl: productData['imageUrl'],
-          isFavorite: favData==null?false:favData[productId] ?? false,
+          isFavorite: favData == null ? false : favData[productId] ?? false,
         ));
       });
     }

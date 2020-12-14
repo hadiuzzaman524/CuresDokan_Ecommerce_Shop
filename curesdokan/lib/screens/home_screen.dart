@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     if (firstTime) {
-      await Provider.of<Products>(context).fetchProduct();
+      await Provider.of<Products>(context).fetchProduct(true);
     }
     firstTime = false;
     setState(() {
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> refresh(BuildContext context) async {
-    await Provider.of<Products>(context,listen: false).fetchProduct();
+    await Provider.of<Products>(context,listen: false).fetchProduct(true);
   }
 
   @override
