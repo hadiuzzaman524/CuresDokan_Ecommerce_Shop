@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../httpexception.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   String _id;
@@ -35,7 +36,6 @@ class Auth with ChangeNotifier {
     }
     return null;
   }
-
 
   Future<void> SignUp(String email, String password) async {
     final url =
@@ -70,6 +70,15 @@ class Auth with ChangeNotifier {
     }
   }
 
+  Future<void> logOut() async {
+    final pref = await SharedPreferences.getInstance();
+    print(pref.getString("UserData"));
+    pref.clear();
+    _token = null;
+    _id = null;
+    _exparytime = null;
+  }
+
   Future<void> logIn(String email, String password) async {
     final url =
         'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCz6DwGwFKf04cLSFULki5uChKxygz1JIc';
@@ -93,7 +102,6 @@ class Auth with ChangeNotifier {
 
       _id = extertedData['localId'];
       notifyListeners();
-
       if (extertedData['error'] != null) {
         final errorData = extertedData['error']['message'];
         throw HttpException(errorData);

@@ -1,8 +1,11 @@
 import 'package:curesdokan/screens/home_screen.dart';
 import 'package:curesdokan/screens/my_product_screen.dart';
 import 'package:curesdokan/screens/order_screen.dart';
+import 'package:curesdokan/screens/registration_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../provider_info/auth.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -54,6 +57,17 @@ class AppDrawer extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.edit),
               title: Text('Customize your products'),
+            ),
+          ),
+          Divider(),
+          FlatButton(
+            onPressed: () async{
+              await Provider.of<Auth>(context,listen: false).logOut();
+              Navigator.pushReplacementNamed(context, RegistrationScreen.routeName);
+            },
+            child: ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Log Out'),
             ),
           ),
         ],
