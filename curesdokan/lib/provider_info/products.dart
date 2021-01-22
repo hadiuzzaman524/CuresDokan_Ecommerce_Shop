@@ -65,11 +65,13 @@ class Products with ChangeNotifier {
       final favData = json.decode(favResponse.body);
 
       extertedData.forEach((productId, productData) {
+     //  print( productData['price'].runtimeType);
+       double data=productData['price'];
         temp.add(Product(
           id: productId,
           title: productData['title'],
           description: productData['description'],
-          price: productData['price'],
+          price:data,
           imageUrl: productData['imageUrl'],
           isFavorite: favData == null ? false : favData[productId] ?? false,
         ));
