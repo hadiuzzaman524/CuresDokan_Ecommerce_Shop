@@ -3,7 +3,7 @@
 For my practice purpose, I build a simple e-commerce application curesDokan. You can add your product, modify your product, order any product, find the product using your favorite choice. You can also see your previous order. The limitation of the application is I could not add a payment gateway.
 
 # Auth page
-![img]()
+![img](https://github.com/hadiuzzaman524/CuresDokan_Ecommerce_Shop/blob/main/Screenshot_1611382823.png)
 
 # Main page
 ![img](https://github.com/hadiuzzaman524/CuresDokan_Ecommerce_Shop/blob/main/Screenshot_1611327562.png)
